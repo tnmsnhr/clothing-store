@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { auth, createUserProfileDocument } from '../../firebase/firebase.util';
 import CustomButton from '../custom-button/custom-button.component';
 import FormInput from '../form-input/form-input.component';
 import './sign-up.styles.scss';
 
-export class SignUp extends Component {
+export class SignUp extends PureComponent {
 
     state={
         displayName:'',
