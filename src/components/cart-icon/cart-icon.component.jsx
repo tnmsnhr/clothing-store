@@ -8,9 +8,15 @@ const CartIcon = props => {
     return (
         <div className="cart-icon" onClick={props.onToggleIcon}>
             <ShoppingIcon className="shopping-icon"/>
-            <span className="item-count">0</span>
+            <span className="item-count">{props.itemCount}</span>
         </div>
     )
+}
+
+const mapStateToProps = state=>{
+    return {
+        itemCount: state.cart.cartItems.flat(2).length
+    }
 }
 
 const mapDispatchToProps = dispatch=>{
@@ -19,4 +25,4 @@ const mapDispatchToProps = dispatch=>{
     }
 }
 
-export default connect(null, mapDispatchToProps)(CartIcon)
+export default connect(mapStateToProps, mapDispatchToProps)(CartIcon)
