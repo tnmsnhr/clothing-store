@@ -11,46 +11,79 @@ const config={
     appId: "1:837620411783:web:db7a686bde3df32caa3722"
   }
 
-  export const createUserProfileDocument = async (userAuth, additionalData)=>{
-      if(!userAuth) return;
+export const createUserProfileDocument = async (userAuth, additionalData)=>{
+    if(!userAuth) return;
 
-      const userRef=firestore.doc(`users/${userAuth.uid}`)
-      const snapShot=await userRef.get()
-      
-      if(!snapShot.exists){
-          const {displayName,email}=userAuth;
-          const createdAt=new Date();
+    const userRef=firestore.doc(`users/${userAuth.uid}`)
+    const snapShot=await userRef.get()
+    
+    if(!snapShot.exists){
+        const {displayName,email}=userAuth;
+        const createdAt=new Date();
 
-          try{
-              await userRef.set({
-                  displayName,
-                  email,
-                  createdAt,
-                  ...additionalData
-              })
+        try{
+            await userRef.set({
+                displayName,
+                email,
+                createdAt,
+                ...additionalData
+            })
 
 
-          }catch(err){
-              console.log(err)
-          }
-      }
+        }catch(err){
+            console.log(err)
+        }
+    }
 
-      return userRef;
-  }
+    return userRef;
+}
 
-  
+export const convertCollectionsSnapshotToMap = (collections)=>{
+    const transformedCollection = collections.docs.map(doc=>{
+        const {title, items} = doc.data()
 
-  if (!firebase.apps.length) {
+        return {
+            routeName: encodeURI(title.toLowerCase()),
+            id: doc.id,
+            title,
+            items
+        }
+    })
+
+    return transformedCollection.reduce((acc,collection)=>{
+        acc[collection.title.toLowerCase()]=collection
+
+        return acc;
+    },{})
+
+}
+
+export const addCollectionAnDocuments = async (collectionKey, objectsToAdd)=>{
+    const collectionRef= firestore.collection(collectionKey)
+
+    const batch=firestore.batch()
+    objectsToAdd.forEach(obj=>{
+        const newDocRef=collectionRef.doc()
+        
+        batch.set(newDocRef, obj)
+    })
+
+    return await batch.commit()
+}
+
+
+
+if (!firebase.apps.length) {
     firebase.initializeApp(config)
- }else {
+    }else {
     firebase.app(); // if already initialized, use that one
- }
+}
 
-  export const auth=firebase.auth();
-  export const firestore=firebase.firestore();
+export const auth=firebase.auth();
+export const firestore=firebase.firestore();
 
-  const provider=new firebase.auth.GoogleAuthProvider();
-  provider.setCustomParameters({prompt:'select_account'})
+const provider=new firebase.auth.GoogleAuthProvider();
+provider.setCustomParameters({prompt:'select_account'})
 const signInWithGoogle=()=> auth.signInWithPopup(provider)
 
-  export default signInWithGoogle;
+export default signInWithGoogle;
