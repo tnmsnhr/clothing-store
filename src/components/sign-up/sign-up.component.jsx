@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import { auth, createUserProfileDocument } from '../../firebase/firebase.util';
+import { signUpStart } from '../../redux/user/user.actions';
 import CustomButton from '../custom-button/custom-button.component';
 import FormInput from '../form-input/form-input.component';
 import './sign-up.styles.scss';
@@ -23,20 +25,24 @@ export class SignUp extends PureComponent {
             return;
         }
 
-        try{
+        console.log(this.props)
 
-            const {user}=auth.createUserWithEmailAndPassword(email,password);
-            await createUserProfileDocument(user,{displayName})
-            this.setState({
-                displayName:'',
-                email:'',
-                password:'',
-                confirmPassword:''
-            })
+        this.props.onSignUpstart({displayName, email, password})
 
-        }catch(err){
-            console.log(err.message)
-        }
+        // try{
+
+        //     const {user}=auth.createUserWithEmailAndPassword(email,password);
+        //     await createUserProfileDocument(user,{displayName})
+        //     this.setState({
+        //         displayName:'',
+        //         email:'',
+        //         password:'',
+        //         confirmPassword:''
+        //     })
+
+        // }catch(err){
+        //     console.log(err.message)
+        // }
     }
 
     handleChange=event=>{
@@ -45,7 +51,6 @@ export class SignUp extends PureComponent {
     }
 
     render() {
-        console.log(this.state)
         return (
             <div className="sign-up">
                 <h2 className="title">I do not have an account</h2>
@@ -97,4 +102,8 @@ export class SignUp extends PureComponent {
     }
 }
 
-export default SignUp
+const mapDispatchToProps= dispatch=>({
+    onSignUpstart: userCredentials=>dispatch(signUpStart(userCredentials))
+})
+
+export default connect(null, mapDispatchToProps)(SignUp)
