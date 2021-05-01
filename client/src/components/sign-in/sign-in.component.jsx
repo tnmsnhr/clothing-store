@@ -1,9 +1,10 @@
+import './sign-in.styles.scss';
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+
 import { emailSignInStart, googleSignInStart } from '../../redux/user/user.actions';
 import CustomButton from '../custom-button/custom-button.component';
 import FormInput from '../form-input/form-input.component';
-import './sign-in.styles.scss';
 
 export class SignIn extends Component {
     

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router';
 import { createStructuredSelector } from 'reselect';
@@ -9,29 +9,25 @@ import { fetchCollectionsStart } from '../../redux/shop/shop.actions';
 import { selectIsCollectionsLoaded } from '../../redux/shop/shop.selectors';
 
 
-class ShopPage extends Component {
+const ShopPage = ({match, fetchCollectionsStartAsync}) => {
 
-    componentDidMount(){
-        this.props.fetchCollectionsStartAsync()
-        
-    }
+    useEffect(()=>{
+        fetchCollectionsStartAsync()
+    },[fetchCollectionsStartAsync])
 
-    render(){
-        const {match}=this.props 
-        return (
-            <div>
-               <Route 
-                exact 
-                path={`${match.path}`} 
-                component={CollectionOverviewContainer}
-                />
+    return (
+        <div>
+           <Route 
+            exact 
+            path={`${match.path}`} 
+            component={CollectionOverviewContainer}
+            />
 
-               <Route 
-                path={`${match.path}/:collectionId`} 
-                component={CollectionPageContainer}/>
-            </div>
-        )
-    }
+           <Route 
+            path={`${match.path}/:collectionId`} 
+            component={CollectionPageContainer}/>
+        </div>
+    )
     
 }
 
